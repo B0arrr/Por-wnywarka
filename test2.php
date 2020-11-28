@@ -2,7 +2,7 @@
     $mysql_host = "localhost";
     $mysql_database = "id15524123_porownywarka_gier";
     $mysql_user = "id15524123_grucha";
-    $mysql_password = "WieclawLukasz12!";
+    $mysql_password = "HasloDoBazyDanych12!";
     
     $arr_Name = null;
     $arr_Description = null;
