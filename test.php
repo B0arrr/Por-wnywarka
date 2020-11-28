@@ -11,7 +11,7 @@
         $mysql_host = "localhost";
         $mysql_database = "id15524123_porownywarka_gier";
         $mysql_user = "id15524123_grucha";
-        $mysql_password = "WieclawLukasz12!";
+        $mysql_password = "HasloDoBazyDanych12!";
         
         try {
           $connect = new PDO("mysql:host=$mysql_host;dbname=$mysql_database", $mysql_user, $mysql_password);
@@ -24,9 +24,9 @@
 	                    JOIN `dbo.Categories` AS C ON G.Category = C.ID
 	                    WHERE G.Description != '...'";
 	                    
-	       $chuj = $connect->query($sql);
+	       $tmp = $connect->query($sql);
 
-            foreach ($chuj as $row) 
+            foreach ($tmp as $row) 
             {
                 print $row['Name'] . " ";
                 print $row['NameOfCategory'] . " ";
@@ -57,9 +57,9 @@
     	                    JOIN `dbo.Categories` AS C ON G.Category = C.ID
     	                    WHERE G.Description != '...'";
     	                    
-    	       $chuj = $connect->query($sql);
+    	       $tmp = $connect->query($sql);
     
-                foreach ($chuj as $row) 
+                foreach ($tmp as $row) 
                 {
                     print $row['Name'] . " ";
                     print $row['NameOfCategory'] . " ";
