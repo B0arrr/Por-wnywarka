@@ -5,13 +5,13 @@
     $mysql_password = "HasloDoBazyDanych12!";
     
     $arr_Name = null;
-    $arr_Description = null;
+    $arr_Producent = null;
     
     try {
       $connect = new PDO("mysql:host=$mysql_host;dbname=$mysql_database", $mysql_user, $mysql_password);
       $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       
-        $sql = "SELECT Name, Description FROM `dbo.Games`";
+        $sql = "SELECT Name, Producent FROM `dbo.Games`";
                     
        $query = $connect->query($sql);
        
@@ -20,7 +20,7 @@
         foreach($query as $tmp)
         {
             $arr_Name[$counter] = $tmp['Name'];
-            $arr_Description[$counter] = $tmp['Description'];
+            $arr_Description[$counter] = $tmp['Producent'];
             $counter++;
         }
         

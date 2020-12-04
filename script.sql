@@ -71,7 +71,7 @@ DROP TABLE IF EXISTS `dbo.Games`;
 CREATE TABLE `dbo.Games` (
   `ID` tinyint(4) DEFAULT NULL,
   `Name` varchar(27) DEFAULT NULL,
-  `Description` varchar(14) DEFAULT NULL,
+  `Producent` varchar(14) DEFAULT NULL,
   `Category` tinyint(4) DEFAULT NULL,
   `Shop` tinyint(4) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
