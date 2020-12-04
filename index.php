@@ -32,7 +32,7 @@
      
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Kategorie
+          Categories
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="#">Action</a>
@@ -45,12 +45,22 @@
 </nav>
  </section>
         <div class ="container">
-        <div class="row">
+        <div class="row pb-5">
               <div class="col-md-2 mb-2">
                
                 <select class="custom-select d-block w-100" id="Kategoria" required>
-                  <option value="">Kategoria...</option>
-                  <option>RPG</option>
+                    
+                  <?php
+                  require "select.php";
+                  
+                  print '<option value="">Kategoria...</option>';
+                  
+                  foreach($arr_Category as $item)
+                  {
+                      print "<option value=".$item.">".$item."</option>";
+                  }
+                  ?>
+                  
                 </select>
                 <div class="invalid-feedback">
                   Please select a valid category.
@@ -59,8 +69,18 @@
               <div class="col-md-2 mb-2">
                 
                 <select class="custom-select d-block w-100" id="producent" required>
-                  <option value="">Producent...</option>
-                  <option>Producent1</option>
+                    
+                  <?php
+                  require "select.php";
+                  
+                  print '<option value="">Producent...</option>';
+                  
+                  foreach($arr_Producent as $item)
+                  {
+                      print "<option value=".$item.">".$item."</option>";
+                  }
+                  ?>
+                  
                 </select>
                 <div class="invalid-feedback">
                   Please provide a valid producent.
@@ -69,8 +89,18 @@
               <div class="col-md-2 mb-2">
                
                 <select class="custom-select d-block w-100" id="sklep" required>
-                  <option value="">Sklep...</option>
-                  <option>Sklep1</option>
+                    
+                 <?php
+                  require "select.php";
+                  
+                  print '<option value="">Sklep...</option>';
+                  
+                  foreach($arr_Shop as $item)
+                  {
+                      print "<option value=".$item.">".$item."</option>";
+                  }
+                  ?>
+                  
                 </select>
                 <div class="invalid-feedback">
                   Please provide a valid sklep.
@@ -85,15 +115,29 @@
             </div>
         
         <div class="row justify-content-center">
-           
-		   <?php
+          
+            <?php
             require 'test3.php';
             ?>
-		   
+            
         </div>
     </div>
     
-<footer class="page-footer font-small blue">
+<nav aria-label="Page navigation example pr-3">
+  <ul class="pagination justify-content-center">
+    <li class="page-item disabled">
+      <a class="page-link" href="#" tabindex="-1">Previous</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item">
+      <a class="page-link" href="#">Next</a>
+    </li>
+  </ul>
+</nav>
+
+<footer class="page-footer  font-small blue">
  
   <div class="footer-copyright text-center py-3">© 2020 Copyright:
     <a href=""> Pórowynwarkacengier</a>
