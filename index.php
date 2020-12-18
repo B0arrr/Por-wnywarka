@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" i>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" >
+    <script src="https://code.jquery.com/jquery-3.5.1.js" ></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" ></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"  ></script>
 </head>
@@ -47,8 +49,7 @@
         <div class ="container">
         <div class="row pb-5">
               <div class="col-md-2 mb-2">
-               
-                <select class="custom-select d-block w-100" id="Kategoria" required>
+                <select class="custom-select d-block w-100" name="NameOfCategory">
                     
                   <?php
                   require "select.php";
@@ -68,7 +69,7 @@
               </div>
               <div class="col-md-2 mb-2">
                 
-                <select class="custom-select d-block w-100" id="producent" required>
+                <select class="custom-select d-block w-100" name="Producent" >
                     
                   <?php
                   require "select.php";
@@ -88,7 +89,7 @@
               </div>
               <div class="col-md-2 mb-2">
                
-                <select class="custom-select d-block w-100" id="sklep" required>
+                <select class="custom-select d-block w-100" name="NameOfShop" >
                     
                  <?php
                   require "select.php";
@@ -106,44 +107,30 @@
                   Please provide a valid sklep.
                 </div>
               </div>
+              
             <div class="col-md-4 mb-2">
-                <form class="form-inline">                
-    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-    <button type="button" class="btn btn-secondary">Search</button>
-  </form>
+                <input id="search-box" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button type="submit" class="btn btn-secondary">Search</button>
             </div>
             </div>
         
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" id="Products">
           
             <?php
-            require 'test3.php';
+            require 'printing.php';
             ?>
             
         </div>
     </div>
-    
-<nav aria-label="Page navigation example pr-3">
-  <ul class="pagination justify-content-center">
-    <li class="page-item disabled">
-      <a class="page-link" href="#" tabindex="-1">Previous</a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#">Next</a>
-    </li>
-  </ul>
-</nav>
 
 <footer class="page-footer  font-small blue">
  
   <div class="footer-copyright text-center py-3">© 2020 Copyright:
-    <a href=""> Pórowynwarkacengier</a>
+    <a href="index.php"> Pórowynwarkacengier</a>
   </div>
 </footer>
 
-    <script src="script.js"></script>
+<script type="text/javascript" src="script.js"></script>
+
 </body>
 </html>
