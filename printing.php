@@ -1,14 +1,14 @@
 <?php
-    $limit = 9;
+    $limit = 12;
     
     $page = 1;
     
     $start = 0;
     
-    if($_GET['page'] > 1)
+    if(@$_GET['page'] > 1)
     {
-      $start = (($_GET['page'] - 1) * $limit);
-      $page = $_GET['page'];
+      $start = ((@$_GET['page'] - 1) * $limit);
+      $page = @$_GET['page'];
     }
     
     $end = $start + $limit;
@@ -16,11 +16,14 @@
     require 'queries.php';
     
     $output = null;
+
+    $counter = 0;
     
     for($i = 0; $i < $limit; $i++)
     {
         if($result_count == (($page-1)*$limit)+$i) break;
-        $output .= '<a href="game.php" class="text-decoration-none text-reset" ><div class="col">
+
+        $output .= '<a href="javascript:void(0)" class="text-decoration-none text-reset" ><div class="col">
             <div class="card" style="width: 20rem;">
             <img class="card-img-top" src="" alt="Card image cap">
             <div class="card-body">
@@ -33,21 +36,23 @@
         </div>
         </div>
         </div></a>';
+        $counter++;
     }
-    
+
     print $output;
     
     $total_links = ceil($result_count/$limit);
     $previous_link = '';
     $next_link = '';
     $page_link = '';
+    $page_array = [];
     
     $output = '
-        <div align="center">
+        <div class="col-md-6 offset-3">
           <ul class="pagination">
         ';
     
-    if($total_links > 4)
+    if($total_links > 5)
     {
       if($page < 5)
       {
@@ -97,7 +102,7 @@
       {
         $page_link .= '
         <li class="page-item active">
-          <a class="page-link" href="">'.$page_array[$count].' <span class="sr-only">(current)</span></a>
+          <a class="page-link" href="javascript:void(0)" data-page_number="'.$page_array[$count].'">'.$page_array[$count].' <span class="sr-only">(current)</span></a>
         </li>
         ';
     
@@ -115,7 +120,7 @@
           ';
         }
         $next_id = $page_array[$count] + 1;
-        if($next_id >= $total_links)
+        if($next_id >= $total_links + 1)
         {
           $next_link = '
           <li class="page-item disabled">
