@@ -1,14 +1,12 @@
 <?php
     $mysql_host = "localhost";
     $mysql_database = "id15524123_porownywarka_gier";
-    $mysql_user = "id15524123_grucha";
-    $mysql_password = "HasloDoBazyDanych12!";
-    
+    $mysql_user = "root";//"id15524123_grucha";
+    $mysql_password = "";//"HasloDoBazyDanych12!";
+
     $arr_Name = null;
     $arr_Producent = null;
     $arr_Shop=null;
-    
-    
     
     try {
       $connect = new PDO("mysql:host=$mysql_host;dbname=$mysql_database", $mysql_user, $mysql_password);

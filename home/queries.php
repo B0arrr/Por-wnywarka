@@ -1,8 +1,8 @@
 <?php
 $mysql_host = "localhost";
 $mysql_database = "id15524123_porownywarka_gier";
-$mysql_user = "root";
-$mysql_password = "";
+$mysql_user = "root";//"id15524123_grucha";
+$mysql_password = "";//"WieclawLukasz12!";
 
 $arr_Name = null;
 $arr_Producent = null;
