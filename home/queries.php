@@ -29,7 +29,7 @@ try {
                 FROM `dbo.Games` G
                 JOIN `dbo.categories` C ON C.ID = G.Category
                 JOIN `dbo.shops` S ON S.ID = G.Shop ";
-    $counter = "SELECT COUNT(Name) AS Counter
+    $counter = "SELECT COUNT(DISTINCT Name) AS Counter
                         FROM `dbo.Games` G
                         JOIN `dbo.categories` C ON C.ID = G.Category
                         JOIN `dbo.shops` S ON S.ID = G.Shop ";
