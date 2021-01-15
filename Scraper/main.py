@@ -6,8 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-shops = ['steam', 'epicgames']
-
+shops = ['epicgames']
 file_name = 'games.json'
 
 def main():
@@ -19,53 +18,57 @@ def main():
     except:
         pass
 
-    if not data:
-        make_dict(data, shops)
+    appended_shops = []
+
     for i in shops:
         if not compare_keys(i, data_keys):
-            update_shop(data, i)
+            append_shop(data, i)
+            appended_shops.append(i)
 
-    # print(len(data['steam']))
-    # print(len(data['epicgames']))
-
-    # update_file(data, 'steam')
-
-    # update_all_prices(data)
+    for i in shops:
+        if i in str(appended_shops):
+            continue
+        update_prices(i, data)
 
     print_data(data)
 
 
 def get_page_numbers(title):
     return {
-        'steam': 1
+        'steam': 1,
+        'gog': 1
     }[title]
 
 
 def get_url(title):
     return {
         'steam': 'https://store.steampowered.com/search/?page=',
-        'epicgames': 'https://www.epicgames.com/store/pl/browse?sortBy=releaseDate&sortDir=DESC&pageSize=25'
+        'epicgames': 'https://www.epicgames.com/store/pl/browse?sortBy=releaseDate&sortDir=DESC&pageSize=25',
+        'gog': 'https://www.gog.com/games?page='
     }[title]
 
 
 def get_xpath_for_name(title):
     return {
         'steam': "//span[@class='title']",
-        'epicgames': "//*[@class='css-2ucwu']"
+        'epicgames': "//*[@class='css-2ucwu']",
+        'gog': '//div[@class="product-tile__title"]'
     }[title]
 
 
 def get_xpath_for_link(title):
     return {
         'steam': "//*[@id= 'search_resultsRows']/a[@href]",
-        'epicgames': "//li[@class= 'css-1adx3p4-BrowseGrid-styles__card']/a[@href]"
+        'epicgames': "//li[@class= 'css-1adx3p4-BrowseGrid-styles__card']/a[@href]",
+        'gog': '//a[@class="product-tile__content js-content"]'
     }[title]
 
 
 def get_xpath_for_price(title):
     return {
         'steam': "//*[@class='col search_price_discount_combined responsive_secondrow']/div[2]",
-        'epicgames': "//*[@class='css-ovezyj']"
+        'epicgames': "//*[@class='css-ovezyj']",
+        'gog': '//span[@class="product-tile__price-discounted _price"]'
     }[title]
 
 
@@ -86,44 +89,67 @@ def get_xpath_for_category(title):
     return {
         'epicgames': "//div[@class='css-1nilh6d']/div[4]/div/div/div/div/span",
         'epicgames_2': "//div[@class='css-1sqot86']/div[4]/div/div/div/div/span",
-        'steam': '//div[@class="glance_tags popular_tags"]/a'
+        'steam': '//div[@class="glance_tags popular_tags"]/a',
+        'gog': '//div[@class="details table table--without-border"]/div[1]/div/a'
     }[title]
 
 
 def get_xpath_for_producent(title):
     return {
         'steam': '//div[@class="dev_row"]/div[2]',
-        'epicgames': '//div[@class="css-1a9lf9m-GameMeta-styles__listData"]'
+        'epicgames': '//div[@class="css-1a9lf9m-GameMeta-styles__listData"]',
+        'gog': '//div[@class="details table table--without-border"]/div[4]/div/a[1]'
     }[title]
 
 
 def get_xpath_for_wait(title):
     return {
         'epicgames': "//div[@class='css-1wd5p3d-TwoColumnGroup__right']",
-        'steam': '//div[@class="game_background_glow"]'
+        'steam': '//div[@class="game_background_glow"]',
+        'gog': '//div[@class="layout-container"]'
+    }[title]
+
+
+def get_xpath_for_update_prize(title):
+    return {
+        'steam': '//div[@class="game_purchase_action_bg"]/div[@class="game_purchase_price price"]',
+        'steam_2': '//div[@class="game_purchase_action_bg"]/div/div[2]/div[2]',
+        'epicgames': '//span[@class="css-8v8on4"]',
+        'epicgames_2': '//span[@class="css-ovezyj"]',
+        'gog': '//span[@class="product-actions-price__final-amount _price ng-binding"]'
+    }[title]
+
+
+def get_xpath_for_update_wait(title):
+    return {
+        'epicgames': "//div[@class='css-1a9lf9m-GameMeta-styles__listData'",
+        'steam': '//div[@class="game_purchase_action"]',
+        'gog': '//span[@class="product-actions-price__final-amount _price ng-binding"]'
     }[title]
 
 
 def fill_shop_with_pages(driver, title, names, prices, links, page_count):
     for i in range(page_count):
         driver.get(get_url(title) + str(i+1))
-        counter = 0
         name_query = driver.find_elements_by_xpath(get_xpath_for_name(title))
         for j in name_query:
-            names.append(j.text.replace('\u2122', '').replace('\u00ae', ''))
+            if j.is_displayed():
+                names.append(j.text.replace('\u2122', '').replace('\u00ae', ''))
         link_query = driver.find_elements_by_xpath(get_xpath_for_link(title))
         for k in link_query:
-            links.append(k.get_attribute('href'))
+            if k.is_displayed():
+                links.append(k.get_attribute('href'))
         price_query_p = driver.find_elements_by_xpath(get_xpath_for_price(title))
         for l in price_query_p:
-            a = ''
-            child = ''
-            try:
-                child = l.find_element_by_tag_name("span").text
-                a = l.text.replace(child, '').replace('\n', '')
-            except:
-                a = l.text
-            prices.append(a)
+            if l.is_displayed():
+                a = ''
+                child = ''
+                try:
+                    child = l.find_element_by_tag_name("span").text
+                    a = l.text.replace(child, '').replace('\n', '')
+                except:
+                    a = l.text
+                prices.append(a)
 
 
 def fill_shop(driver, title, names, prices, links):
@@ -146,18 +172,7 @@ def fill_categories_and_producent(driver, title, link, categories, producent):
     producent[0] = ''
     query_categories = ''
 
-    try:
-        if title == 'steam':
-            select = driver.find_element_by_xpath('//select[@id="ageYear"]')
-            option = select.find_elements_by_tag_name('option')
-            for i in option:
-                if i.text == '2000':
-                    i.click()
-            driver.find_element_by_xpath(get_xpath_for_confirm_entry(title)).click()
-        else:
-            driver.find_element_by_xpath(get_xpath_for_confirm_entry(title)).click()
-    except:
-        pass
+    entry(title, driver)
 
     try:
         WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, get_xpath_for_wait(title))))
@@ -189,29 +204,10 @@ def fill_categories_and_producent(driver, title, link, categories, producent):
 
 
 def fill(driver, title, names, prices, links):
-    if title == 'steam':
+    if title == 'steam' or title == 'gog':
         fill_shop_with_pages(driver, title, names, prices, links, get_page_numbers(title))
     else:
         fill_shop(driver, title, names, prices, links)
-
-
-def make_dict(data, shops):
-    driver = webdriver.Chrome()
-    for i in shops:
-        data[i] = []
-        names = []
-        prices = []
-        links = []
-        categories = []
-        producent = ['']
-        fill(driver, i, names, prices, links)
-        for j, k, l in zip(names, prices, links):
-            if k == 'Free to Play' or k == 'Bezpłatne' or k == '':
-                continue
-            fill_categories_and_producent(driver, i, l, categories, producent)
-            data[i].append({'name': j, 'price': k, 'link': l, 'categories': list(categories), 'producent': producent[0]})
-    driver.quit()
-    save(data)
 
 
 def save(data):
@@ -221,7 +217,7 @@ def save(data):
 
 def load():
     try:
-        with open(file_name) as file:
+        with open(file_name, encoding='UTF-8') as file:
             tmp = json.load(file)
             return tmp
     except:
@@ -240,39 +236,44 @@ def fix_string(string):
     return tmp.replace('\r', '').replace('\n', '').replace('\t', '')
 
 
-# def update_prices_no_js(title, obj):
-#     page = requests.get(obj['link'])
-#     query = etree.HTML(page.content)
-#     price = query.xpath(get_xpath_for_normal_price(title))
-#
-#     if not price:
-#         price = query.xpath(get_xpath_for_discount_price(title))
-#     obj['price'] = fix_string(price[0])
+def update_prices(title, data):
+    driver = webdriver.Chrome()
+
+    for i in data[title]:
+        driver.get(i['link'])
+
+        entry(title, driver)
+
+        try:
+            WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, get_xpath_for_update_wait(title))))
+        except:
+            pass
 
 
-# def update_prices(title, obj):
-#     try:
-#         driver = webdriver.Chrome()
-#         driver.get(obj['link'])
-#         query = driver.find_element_by_xpath(get_xpath_for_normal_price(title))
-#         if query is None:
-#             query = driver.find_element_by_xpath(get_xpath_for_discount_price(title))
-#         obj['price'] = query.text
-#     except:
-#         obj['price'] = ''
+        price = ''
+
+        try:
+            query = driver.find_element_by_xpath(get_xpath_for_update_prize(title))
+            price = query.text
+        except:
+            pass
+
+        if price is '':
+            try:
+                query = driver.find_element_by_xpath(get_xpath_for_update_prize(title+'_2'))
+                price = query.text
+            except:
+                pass
+
+        price.replace('\n', '')
+        if i['price'] is not price:
+            i['price'] = price
+        print(price)
+    save(data)
+    driver.quit()
 
 
-# def update_all_prices(data):
-#     for i in data:
-#         for j in data[i]:
-#             if i == 'steam':
-#                 update_prices_no_js(i, j)
-#             else:
-#                 update_prices(i, j)
-#     # save(data)
-
-
-def update_shop(data, title):
+def append_shop(data, title):
     data.update({title: []})
     driver = webdriver.Chrome()
     names = []
@@ -282,7 +283,7 @@ def update_shop(data, title):
     producents = ['']
     fill(driver, title, names, prices, links)
     for j, k, l in zip(names, prices, links):
-        if k == 'Free to Play' or k == 'Bezpłatne' or k == '':
+        if k == 'Free to Play' or k == 'Bezpłatne' or k == '' or k == 'Za darmo':
             continue
         fill_categories_and_producent(driver, title, l, categories, producents)
         data[title].append({'name': j, 'price': k, 'link': l, 'categories': list(categories), 'producent': producents[0]})
@@ -300,10 +301,19 @@ def compare_keys(title, keys):
     return True
 
 
-# def update_file():
-
-
-# def fill_prices(data, shops):
+def entry(title, driver):
+    try:
+        if title == 'steam':
+            select = driver.find_element_by_xpath('//select[@id="ageYear"]')
+            option = select.find_elements_by_tag_name('option')
+            for i in option:
+                if i.text == '2000':
+                    i.click()
+            driver.find_element_by_xpath(get_xpath_for_confirm_entry(title)).click()
+        else:
+            driver.find_element_by_xpath(get_xpath_for_confirm_entry(title)).click()
+    except:
+        pass
 
 
 if __name__ == "__main__":
