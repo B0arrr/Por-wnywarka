@@ -1,5 +1,5 @@
 <?php
-    $limit = 12;
+    $limit = 18;
     
     $page = 1;
     
@@ -23,18 +23,28 @@
     {
         if($result_count == (($page-1)*$limit)+$i) break;
 
-        $output .= '<a href="javascript:void(0)" class="text-decoration-none text-reset" ><div class="col">
-            <div class="card" style="width: 20rem;">
-            <img class="card-img-top" src="" alt="Card image cap">
-            <div class="card-body">
-            <h5 class="card-title">';
-        $output .= $arr_Name[$i];
-        $output .= '</h5>
-            <p class="card-text">';
-        $output .= $arr_Producent[$i];
-        $output .= '</p>
-        </div>
-        </div>
+        $output .= '<a href="javascript:void(0)" class="text-decoration-none text-reset" >
+        <div class="col">
+            <div class="card bg-dark border-0" style="width: 20rem;">
+                <img class="card-img-top" src="';
+                    $output.= $arr_Images[$i];
+                    $output.= '" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title" title="';
+                        $output .= $arr_Name[$i];
+                        $output .= '">';
+                        $output .= $arr_Name[$i];
+                    $output .= '</h5>
+                    <p class="card-text" title="';
+                        $output .= $arr_Producent[$i];
+                        $output .= '">';
+                        $output .= $arr_Producent[$i];
+                    $output .= '</p>
+                    <h6>';
+                        $output .= $arr_Prices[$i];
+                    $output .=' zł</h6>
+                </div>
+            </div>
         </div></a>';
         $counter++;
     }

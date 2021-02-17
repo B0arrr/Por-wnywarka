@@ -51,9 +51,16 @@ $output .= '
               </div>
               
             <div class="col-md-4 mb-2">
-                <input id="search-box" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button type="submit" class="btn btn-secondary">Search</button>
-            </div>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="search-box" id="search_box">
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="button" id="loupe">
+                                 <i class="fa fa-search"></i>
+                             </button>
+                        </div>
+                    </div>
+                 </button>
+               </div>
         </div>';
 
 print $output;

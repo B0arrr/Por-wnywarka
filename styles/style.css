@@ -1,7 +1,7 @@
 body
 {
     min-height: 100%;
-	background-color: #111111;
+
 	color: #efefef;
     font-family: 'Open Sans', sans-serif;
     font-size: 20px;
@@ -19,26 +19,28 @@ a #hover
 {
  padding-top: 50px;
 }
-    
+
 .card
 {
-   margin: 0 auto; 
-    float: none; 
-    margin-bottom: 10px; 
-} 
+    margin: 0 auto;
+    float: none;
+    margin-bottom: 10px;
+}
 
 #nav-bar
 {
     position: sticky;
     top:0;
-    z-index:10;
-    
+    z-index:1;
+    background-color: #343a40!important;
+
 }
 .navbar-brand
 {
     height: 40px;
     padding-left: 30px;
-    padding-right: 30px;  
+    padding-right: 30px;
+
 }
 
 .col-center-block {
@@ -65,7 +67,64 @@ a #hover
     color:cadetblue;
     border-color:cadetblue;
 }
-.card-img-top 
+.card-img-top
 {
-    height: 10rem; 
+    height: 10rem;
 }
+
+.card h5
+{
+    line-height: 1.5em;
+    height: 1.5em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.card p
+{
+    line-height: 1.1em;
+    height: 1.1em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 60%;
+    float: left;
+}
+
+.card span
+{
+    line-height: 1.1em;
+    height: 1.1em;
+    width: 40%;
+    text-align: right;
+    float: left;
+    color: white;
+}
+
+.card :hover
+{
+    background-color: #efefef;
+    color: #2E2E2E;
+}
+
+.card
+{
+    color: white;
+}
+
+.card h6
+{
+    text-align: right;
+}
+
+.h4
+{
+    color: white;
+}
+.bg-black
+{
+    background-color: rgba(41, 41, 41, 1);
+}
+

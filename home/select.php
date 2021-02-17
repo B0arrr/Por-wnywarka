@@ -1,6 +1,6 @@
 <?php
     $mysql_host = "localhost";
-    $mysql_database = "id15524123_porownywarka_gier";
+    $mysql_database = "porownywarkatest2";
     $mysql_user = "root";//"id15524123_grucha";
     $mysql_password = "";//"HasloDoBazyDanych12!";
 
@@ -12,7 +12,7 @@
       $connect = new PDO("mysql:host=$mysql_host;dbname=$mysql_database", $mysql_user, $mysql_password);
       $connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       
-        $sql = "SELECT DISTINCT NameOfCategory FROM `dbo.Categories`";
+        $sql = "SELECT DISTINCT Category FROM `categories`";
                     
        $query = $connect->query($sql);
        
@@ -20,12 +20,12 @@
 
         foreach($query as $tmp)
         {
-            $arr_Category[$counter] = $tmp['NameOfCategory'];
+            $arr_Category[$counter] = $tmp['Category'];
            
             $counter++;
         }
         
-         $sql = "SELECT DISTINCT NameOfShop FROM `dbo.Shops`";
+         $sql = "SELECT DISTINCT NameOfShop FROM `shop_names`";
                     
        $query = $connect->query($sql);
        
@@ -38,7 +38,7 @@
             $counter++;
         }
         
-          $sql = "SELECT DISTINCT Producent FROM `dbo.Games`";
+          $sql = "SELECT DISTINCT Producent FROM `games`";
                     
        $query = $connect->query($sql);
        

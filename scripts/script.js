@@ -1,13 +1,13 @@
 $(document).ready(function(){
 
     const container = $('.container').html();
-    console.log(container);
 	let page = 1;
 	let category = '';
 	let producent = '';
 	let shop = '';
 	let name = '';
 	let newurl = '';
+    let search='';
 
     preparation();
 
@@ -17,7 +17,23 @@ $(document).ready(function(){
 
     function get_data(){
         let data;
-        name === '' ? data = {'page':page,'category':category, 'producent':producent, 'shop':shop} : data = {'name':name};
+        if(search !=='')
+        {
+          data = {'page': page,
+              'category': category,
+              'producent': producent,
+              'shop': shop,
+              'search':search,
+              'name': name}
+        }else {
+            name === '' ? data = {
+                'page': page,
+                'category': category,
+                'producent': producent,
+                'shop': shop,
+                'search': search
+            } : data = {'name': name};
+        }
         return data;
     }
 
@@ -29,31 +45,32 @@ $(document).ready(function(){
 
     function load_data(url, data) {
         newurl = window.location.pathname;
-        if (name === '') {
-            if (page !== 1)
-            {
-                newurl === window.location.pathname ? newurl += '#strona='+page : newurl = window.location.pathname;
-            }
+        if(search !=='')
+        {
+            newurl === window.location.pathname ? newurl += '#szukaj='+search : newurl = window.location.pathname;
+        }else {
 
-            if (category !== '')
-            {
-                newurl === window.location.pathname ? newurl += '#kategoria='+category : newurl += '&kategoria='+category;
-            }
+            if (name === '') {
+                if (page !== 1) {
+                    newurl === window.location.pathname ? newurl += '#strona=' + page : newurl = window.location.pathname;
+                }
 
-            if (producent !== '')
-            {
-                newurl === window.location.pathname ? newurl += '#producent='+producent : newurl += '&producent='+producent;
-            }
+                if (category !== '') {
+                    newurl === window.location.pathname ? newurl += '#kategoria=' + category : newurl += '&kategoria=' + category;
+                }
 
-            if (shop !== '')
-            {
-                newurl === window.location.pathname ? newurl += '#sklep='+shop : newurl += '&sklep='+shop;
+                if (producent !== '') {
+                    newurl === window.location.pathname ? newurl += '#producent=' + producent : newurl += '&producent=' + producent;
+                }
+
+                if (shop !== '') {
+                    newurl === window.location.pathname ? newurl += '#sklep=' + shop : newurl += '&sklep=' + shop;
+                }
+
+            } else {
+                newurl += '#gra=' + name;
             }
         }
-        else {
-            newurl += '#gra='+name;
-        }
-
         $.ajax({
             url:url,
             method:"GET",
@@ -89,11 +106,6 @@ $(document).ready(function(){
         preparation();
 	});
 
-    // $(document).on('click', '#search-box', function(){
-    //     shop = $(this).val();
-    //     preparation(1);
-    // });
-
     $(document).on('click', '#home', function (){
         name = category = producent = shop = '';
         page = 1;
@@ -101,9 +113,44 @@ $(document).ready(function(){
         preparation();
     });
 
+    $(document).on('click', '#Goback', function (){
+        name = '';
+        $('.container').html(container);
+        preparation();
+    });
+
     $(document).on('click', '.text-decoration-none', function (){
         name = $(this).find('.card-title').text();
         preparation();
+    });
+
+    $(document). on('click', '#loupe', function (){
+        $(function (){
+            $('#categories option').filter(function() {
+                return ($(this).text() === 'Kategoria...');
+            }).prop('selected', true);
+
+            $('#producents option').filter(function() {
+                return ($(this).text() === 'Producent...');
+            }).prop('selected', true);
+
+            $('#shops option').filter(function() {
+                return ($(this).text() === 'Sklep...');
+            }).prop('selected', true);
+        });
+
+        name = category = producent = shop = '';
+        page=1;
+        search= $('#search_box').val();
+
+        preparation();
+    });
+
+    $("#search_box").on("keydown",function search(e) {
+        if(e.keyCode === 13) {
+            $('#loupe').click();
+            console.log("enter");
+        }
     });
 
     $(window).bind('hashchange', function(){
@@ -121,6 +168,7 @@ $(document).ready(function(){
             result['producent'] === undefined ? producent = '' : producent = result['producent'];
             result['sklep'] === undefined ? shop = '' : shop = result['sklep'];
             result['gra'] === undefined ? name = '' : name = result['gra'];
+            result['szukaj'] === undefined ? name = '' : search = result['szukaj'];
             const max_page = $('.page-item').last().prev().text();
             page > max_page ? page = 1 : page;
         }

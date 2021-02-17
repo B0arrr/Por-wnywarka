@@ -1,14 +1,16 @@
 <?php
 $mysql_host = "localhost";
 $mysql_database = "porownywarkatest2";
-$mysql_user = "root";//"id15524123_grucha";
+$mysql_user = "root"; //"id15524123_grucha";
 $mysql_password = "";//"WieclawLukasz12!";
 
 
 $arr_Price=null;
 $arr_NameOfShop=null;
 $shops_count=null;
-
+$arr_Links=null;
+$arr_Images=null;
+$arr_GameProducent=null;
 
 try {
     $connect = new PDO("mysql:host=$mysql_host;dbname=$mysql_database", $mysql_user, $mysql_password);
@@ -16,7 +18,7 @@ try {
 
     @$name = $_GET['name'];
 
-    $sql = "SELECT DISTINCT Name, Producent,NameOfShop,Price
+    $sql = "SELECT DISTINCT Name, Producent,NameOfShop,Price,Link,Image
 
                 FROM `games` G
                 JOIN `game_categories` GC ON GC.ID_game = G.ID
@@ -38,6 +40,9 @@ try {
     {
         $arr_NameOfShop[$counter] = $i['NameOfShop'];
         $arr_Price[$counter] = $i['Price'];
+        $arr_Links[$counter]=$i['Link'];
+        $arr_Images[$counter]=$i['Image'];
+        $arr_GameProducent[$counter]=$i['Producent'];
         $counter++;
     }
     $shops_count=$counter;

@@ -3,8 +3,7 @@ $mysql_host = "localhost";
 $mysql_database = "porownywarkatest2";
 $mysql_user = "root";//"id15524123_grucha";
 $mysql_password = "";//"WieclawLukasz12!";
-
-$filename= "games.json";
+$filename= "games2.json";
 $data=file_get_contents($filename);
 $games=json_decode($data,true);
 
@@ -21,11 +20,14 @@ try
             $shop= 'Steam';
         else if ($i=='epicgames')
             $shop= 'Epic Games Store';
+        else if ($i=='gog')
+            $shop= 'GOG';
 
         $sql_shop_name="SELECT ID From `shop_names` WHERE NameOfShop='{$shop}' ";
         $sql_shop_name_query = $conn->prepare($sql_shop_name);
         $sql_shop_name_query -> execute();
         $id_shop_name=null;
+        $id_shops=null;
         foreach($sql_shop_name_query as $p)
         {
             $id_shop_name=$p['ID'];
@@ -62,6 +64,7 @@ try
             $price = str_replace(",",".",$price);
             $price = (double)$price;
             $link = $j['link'];
+            $image=$j['img'];
             $categories = null;
             $counter=0;
             foreach ($j['categories'] as $k)
@@ -84,7 +87,6 @@ try
             foreach($sql_game_query as $o)
             {
                 $id_game=$o['ID'];
-
             }
             if($id_game == null)
             {
@@ -105,10 +107,11 @@ try
                 {
                     $id_game++;
                 }
-                $sql_append_game = "INSERT INTO `games` VALUES ({$id_game},:name,:producent)";
+                $sql_append_game = "INSERT INTO `games` VALUES ({$id_game},:name,:producent,:img)";
                 $sql_append_game_query = $conn->prepare($sql_append_game);
                 $sql_append_game_query->bindParam(':name', $name);
                 $sql_append_game_query->bindParam(':producent', $producent);
+                $sql_append_game_query->bindParam(':img', $image);
                 $sql_append_game_query->execute();
 
 
@@ -159,7 +162,6 @@ try
                     $sql_append_game_category = "INSERT INTO `game_categories` VALUES ({$id_game},{$m})";
                     $sql_append_game_category_query = $conn->prepare($sql_append_game_category);
                     $sql_append_game_category_query->execute();
-
                 }
             }
 
@@ -197,7 +199,7 @@ try
                 {
                     $id_shops++;
                 }
-                print $id_shops;
+//                print $id_shops;
 
                 $sql_append_shops = "INSERT INTO `shops` VALUES ({$id_shops}, {$id_shop_name}, {$price}, :link)";
                 $sql_append_shops_query = $conn->prepare($sql_append_shops);
@@ -207,25 +209,38 @@ try
                 $sql_append_game_shop = "INSERT INTO `game_shops` VALUES ({$id_game},{$id_shops})";
                 $sql_append_game_shop_query = $conn->prepare($sql_append_game_shop);
                 $sql_append_game_shop_query->execute();
-
             }
 
-            $sql_game_price_in_database= "SELECT Price AS database_price FROM `shops`
-                                        WHERE  ID ={$id_shops} AND ID_shop= {$id_shop_name} ";
-            $sql_game_price_in_query = $conn->prepare($sql_game_price_in_database);
-            $sql_game_price_in_query->execute();
-
-            foreach ($sql_game_price_in_query as $b)
+            if($tmp_presence != '')
             {
-                $game_price_in_database = $b['database_price'];
-            }
+                $sql_id_shop_from_shops = "SELECT s.ID AS ID FROM `shops` s JOIN `game_shops` gs ON s.ID=gs.ID_shop
+                                    JOIN `games` g ON gs.ID_game=g.ID
+                                    WHERE g.Name = :name AND s.ID_shop = {$id_shop_name}";
+                $sql_id_shop_from_shops_query = $conn ->prepare($sql_id_shop_from_shops);
+                $sql_id_shop_from_shops_query -> bindParam(':name', $tmp_presence);
+                $sql_id_shop_from_shops_query -> execute();
 
-            if($tmp_presence!='' && $price!= $game_price_in_database)
-            {
+                foreach ($sql_id_shop_from_shops_query as $a)
+                {
+                    $id_shops = $a['ID'];
+                }
+
+                $sql_game_price_in_database= "SELECT Price AS database_price FROM `shops`
+                                        WHERE  ID ={$id_shops} AND ID_shop= {$id_shop_name}";
+                $sql_game_price_in_query = $conn->prepare($sql_game_price_in_database);
+                $sql_game_price_in_query->execute();
+
+                foreach ($sql_game_price_in_query as $b)
+                {
+                    $game_price_in_database = $b['database_price'];
+                }
+
+                if ($price == $game_price_in_database) continue;
+
                 $sql_game_price_in_database_change= "UPDATE `shops` SET `Price` = '{$price}'
-                                                         WHERE  ID ={$id_shops} AND ID_shop= {$id_shop_name};";
+                                                         WHERE ID ={$id_shops} AND ID_shop = {$id_shop_name}";
                 $sql_game_price_in_database_change_query = $conn->prepare($sql_game_price_in_database_change);
-                $sql_game_price_in_database_change_query>execute();
+                $sql_game_price_in_database_change_query->execute();
             }
         }
 

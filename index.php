@@ -16,10 +16,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"  ></script>
 </head>
 
-<body class="d-flex flex-column min-vh-100 bg-dark ">
+<body class="d-flex flex-column min-vh-100 bg-dark">
 
     <section id="nav-bar">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-black">
             <a class="navbar-brand" href="#">Pórównywarka cen gier</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -29,25 +29,13 @@
                     <li class="nav-item active">
                     <a class="nav-link" href="javascript:void(0)" id="home">Home <span class="sr-only">(current)</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Signup</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Categories
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">MilF</a>
-                            <a class="dropdown-item" href="#">RPG</a>
-                        </div>
-                    </li>
                 </ul>
             </div>
         </nav>
     </section>
 
     <div class ="container">
+
         <?php
         require 'home/options.php';
         ?>
