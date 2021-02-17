@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-shops = ['epicgames']
+shops = ['gog']
 file_name = 'games.json'
 
 def main():
@@ -25,10 +25,12 @@ def main():
             append_shop(data, i)
             appended_shops.append(i)
 
-    for i in shops:
-        if i in str(appended_shops):
-            continue
-        update_prices(i, data)
+    # for i in shops:
+    #     if i in str(appended_shops):
+    #         continue
+    #     update_prices(i, data)
+
+    print(len(data['gog']))
 
     print_data(data)
 
@@ -59,8 +61,24 @@ def get_xpath_for_name(title):
 def get_xpath_for_link(title):
     return {
         'steam': "//*[@id= 'search_resultsRows']/a[@href]",
-        'epicgames': "//li[@class= 'css-1adx3p4-BrowseGrid-styles__card']/a[@href]",
+        'epicgames': '//li[@class="css-18gst1e-BrowseGrid-styles__card"]/a',
         'gog': '//a[@class="product-tile__content js-content"]'
+    }[title]
+
+
+def get_xpath_for_img_link(title):
+    return {
+        'steam': "//*[@id= 'search_resultsRows']/a/div/img",
+        'epicgames': '//li[@class="css-18gst1e-BrowseGrid-styles__card"]/a/div/div/div/div/div/img',
+        'gog': '//a[@class="product-tile__content js-content"]/div[2]/picture/img'
+    }[title]
+
+
+def get_attribute_for_img_link(title):
+    return {
+        'epicgames': 'data-image',
+        'steam': 'src',
+        'gog': 'src'
     }[title]
 
 
@@ -110,7 +128,7 @@ def get_xpath_for_wait(title):
     }[title]
 
 
-def get_xpath_for_update_prize(title):
+def get_xpath_for_update_price(title):
     return {
         'steam': '//div[@class="game_purchase_action_bg"]/div[@class="game_purchase_price price"]',
         'steam_2': '//div[@class="game_purchase_action_bg"]/div/div[2]/div[2]',
@@ -128,9 +146,10 @@ def get_xpath_for_update_wait(title):
     }[title]
 
 
-def fill_shop_with_pages(driver, title, names, prices, links, page_count):
+def fill_shop_with_pages(driver, title, names, prices, links, img_links, page_count):
     for i in range(page_count):
         driver.get(get_url(title) + str(i+1))
+        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, get_xpath_for_name(title))))
         name_query = driver.find_elements_by_xpath(get_xpath_for_name(title))
         for j in name_query:
             if j.is_displayed():
@@ -139,6 +158,10 @@ def fill_shop_with_pages(driver, title, names, prices, links, page_count):
         for k in link_query:
             if k.is_displayed():
                 links.append(k.get_attribute('href'))
+        img_link_query = driver.find_elements_by_xpath(get_xpath_for_img_link(title))
+        for k in img_link_query:
+            if k.is_displayed():
+                img_links.append(k.get_attribute(get_attribute_for_img_link(title)))
         price_query_p = driver.find_elements_by_xpath(get_xpath_for_price(title))
         for l in price_query_p:
             if l.is_displayed():
@@ -149,20 +172,23 @@ def fill_shop_with_pages(driver, title, names, prices, links, page_count):
                     a = l.text.replace(child, '').replace('\n', '')
                 except:
                     a = l.text
+                a.replace('zł', '').replace(' ', '')
                 prices.append(a)
 
 
-def fill_shop(driver, title, names, prices, links):
+def fill_shop(driver, title, names, prices, links, img_links):
     driver.get(get_url(title))
     WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.XPATH, get_xpath_for_name(title))))
     name_query = driver.find_elements_by_xpath(get_xpath_for_name(title))
     link_query = driver.find_elements_by_xpath(get_xpath_for_link(title))
+    img_link_query = driver.find_elements_by_xpath(get_xpath_for_img_link(title))
     price_query = driver.find_elements_by_xpath(get_xpath_for_price(title))
 
-    for i, j, k in zip(name_query, price_query, link_query):
+    for i, j, k, l in zip(name_query, price_query, link_query, img_link_query):
         names.append(i.text.replace('\u2122', '').replace('\u00ae', ''))
-        prices.append(j.text)
+        prices.append(j.text.replace('zł', '').replace(' ', '').replace('\n', ''))
         links.append(k.get_attribute('href'))
+        img_links.append(l.get_attribute(get_attribute_for_img_link(title)))
 
 
 def fill_categories_and_producent(driver, title, link, categories, producent):
@@ -203,11 +229,11 @@ def fill_categories_and_producent(driver, title, link, categories, producent):
         categories.append(i.text)
 
 
-def fill(driver, title, names, prices, links):
+def fill(driver, title, names, prices, links, img_links):
     if title == 'steam' or title == 'gog':
-        fill_shop_with_pages(driver, title, names, prices, links, get_page_numbers(title))
+        fill_shop_with_pages(driver, title, names, prices, links, img_links, get_page_numbers(title))
     else:
-        fill_shop(driver, title, names, prices, links)
+        fill_shop(driver, title, names, prices, links, img_links)
 
 
 def save(data):
@@ -253,22 +279,21 @@ def update_prices(title, data):
         price = ''
 
         try:
-            query = driver.find_element_by_xpath(get_xpath_for_update_prize(title))
+            query = driver.find_element_by_xpath(get_xpath_for_update_price(title))
             price = query.text
         except:
             pass
 
         if price is '':
             try:
-                query = driver.find_element_by_xpath(get_xpath_for_update_prize(title+'_2'))
+                query = driver.find_element_by_xpath(get_xpath_for_update_price(title+'_2'))
                 price = query.text
             except:
                 pass
 
-        price.replace('\n', '')
+        price.replace('\n', '').replace('zł', '').replace(' ', '')
         if i['price'] is not price:
             i['price'] = price
-        print(price)
     save(data)
     driver.quit()
 
@@ -279,14 +304,15 @@ def append_shop(data, title):
     names = []
     prices = []
     links = []
+    img_links = []
     categories = []
     producents = ['']
-    fill(driver, title, names, prices, links)
-    for j, k, l in zip(names, prices, links):
+    fill(driver, title, names, prices, links, img_links)
+    for j, k, l, m in zip(names, prices, links, img_links):
         if k == 'Free to Play' or k == 'Bezpłatne' or k == '' or k == 'Za darmo':
             continue
         fill_categories_and_producent(driver, title, l, categories, producents)
-        data[title].append({'name': j, 'price': k, 'link': l, 'categories': list(categories), 'producent': producents[0]})
+        data[title].append({'name': j, 'price': k, 'link': l, 'img': m, 'categories': list(categories), 'producent': producents[0]})
     driver.quit()
     save(data)
 
